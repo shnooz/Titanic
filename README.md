@@ -24,7 +24,7 @@
 + Run python process.py to process the train and test data. 
 ++ That will create two new files in the processed folder.
 + Run python learn.py.
-++ This file runs four different classifying algorithms and assesses them.
+++ This file runs three different classifying algorithms and assesses them.
 + Run python predict.py.
 ++ This file uses logistic regression algorithm to predict the test dataset survival.
 ++ It will creat a new file test_predict in the predictions folder

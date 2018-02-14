@@ -6,7 +6,6 @@ from sklearn import metrics
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.neural_network import  MLPClassifier
 
 def replace_nans(train):
 	# Create our imputer to replace missing values with the mean e.g.
@@ -80,6 +79,6 @@ if __name__ == "__main__":
 	compute_and_print(train, (LogisticRegression(random_state=1, class_weight="balanced")))
 	compute_and_print(train, (DecisionTreeClassifier(max_depth=6, min_samples_leaf=3, class_weight="balanced")))
 	compute_and_print(train, (AdaBoostClassifier(learning_rate = 0.5, n_estimators=100)))
-	compute_and_print(train, (MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)))
+	
 
 
