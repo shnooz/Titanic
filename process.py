@@ -5,6 +5,12 @@ def dummify(df, col_name):
 	df[col_name] = pd.get_dummies(df[col_name])
 	return df
 
+def normalize(df, col_name):
+	col_mean = df[col_name].mean()
+	col_std = df[cl_name].std()
+	df[col_name] = (df[col_name] - col_mean)/(col_std)**2
+	return df
+
 
 if __name__ == "__main__":
 	#Reading the files into a DataFrame:
@@ -15,6 +21,11 @@ if __name__ == "__main__":
     for df in [train_df, test_df]:
     	for col_name in ['Sex', 'Embarked']:
     		df = dummify (df, col_name)
+
+    # Normalizing parametes:
+    for df in [train_df, test_df]:
+    	for col_name in ['Age', 'SibSp', 'Parch', 'Fare']:
+    		df = normalize(df, col_name)
 
     #Choosing features to work with:
     train_df = train_df[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked', 'Survived' ]]
