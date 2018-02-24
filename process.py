@@ -7,7 +7,7 @@ def dummify(df, col_name):
 
 def normalize(df, col_name):
 	col_mean = df[col_name].mean()
-	col_std = df[cl_name].std()
+	col_std = df[col_name].std()
 	df[col_name] = (df[col_name] - col_mean)/(col_std)**2
 	return df
 
