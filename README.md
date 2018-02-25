@@ -21,6 +21,7 @@
 ++ You may want to use a virtual environment for this.
 
 ## Usage
++ Run pythn data_exploration.py to explore the data. This file will output information on the data.
 + Run python process.py to process the train and test data. 
 ++ That will create two new files in the processed folder.
 + Run python learn.py.
