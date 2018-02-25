@@ -13,13 +13,14 @@ def dummify(df, col_name):
 #	df[col_name] = (df[col_name] - col_mean)/(col_std)**2
 #	return df
 
-def replace_nans(df):
+def replace_nans(df, col_name):
 	# Create our imputer to replace missing values with the mean e.g.
 	values = {}
-	for col in df.columns:
-		values[col] = df[col].mean()
+	#for col in df.columns:
+	#	values[col] = df[col].mean()
+	mean = df[col_name].mean()
 
-	df = df.fillna(value = values, axis = 0 )
+	df[col_name] = df[col_name].fillna(value = mean, axis = 0 )
 	return(df)
 
 if __name__ == "__main__":
@@ -43,7 +44,8 @@ if __name__ == "__main__":
 
     #Replacing Nans with mean (could improve that...):
     for df in [train_df, test_df]:
-    	df = replace_nans(df)
+    	for col_name in ['Age', 'Embarked']:
+    		df = replace_nans(df, col_name)
 
     #Saving the processed DataFrames to_csv in the processed folder
     train_df.to_csv(os.path.join('processed', "train.csv"))
