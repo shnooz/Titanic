@@ -22,7 +22,7 @@
 
 ## Workflow
 + Here is an outline of the workflow I used:
-![](file:///C:/Users/shnoo/Desktop/Data%20Science/projects/‏20171105%20Titanic/process.png?raw=true)
+![](https://github.com/shnooz/Titanic/blob/master/process.png)
 
 ## Usage
 + Run pythn data_exploration.py to explore the data. This file will output information on the data.
