@@ -22,7 +22,7 @@
 
 ## Workflow
 + Here is an outline of the workflow I used:
-![](C:\Users\shnoo\Desktop\Data Science\projects\‏20171105 Titanic\process.png?raw=true)
+![](file:///C:/Users/shnoo/Desktop/Data%20Science/projects/‏20171105%20Titanic/process.png?raw=true)
 
 ## Usage
 + Run pythn data_exploration.py to explore the data. This file will output information on the data.
