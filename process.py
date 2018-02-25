@@ -11,13 +11,13 @@ def normalize(df, col_name):
 	df[col_name] = (df[col_name] - col_mean)/(col_std)**2
 	return df
 
-def replace_nans(df, col_name):
+def replace_nans(df):
 	# Create our imputer to replace missing values with the mean e.g.
 	values = {}
 	for col in df.columns:
 		values[col] = df[col].mean()
 
-	df[col_name] = df[col_name].fillna(value = values, axis = 0 )
+	df = df.fillna(value = values, axis = 0 )
 	return(df)
 
 if __name__ == "__main__":
@@ -35,13 +35,13 @@ if __name__ == "__main__":
     	for col_name in ['Age', 'SibSp', 'Parch', 'Fare']:
     		df = normalize(df, col_name)
 
-    for df in [train_df, test_df]:
-    	df = replace_nans(df)
-
     #Choosing features to work with:
     train_df = train_df[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked', 'Survived' ]]
     test_df = test_df[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']]
 
+    #Replacing Nans with mean (could improve that...):
+    for df in [train_df, test_df]:
+    	df = replace_nans(df)
 
     #Saving the processed DataFrames to_csv in the processed folder
     train_df.to_csv(os.path.join('processed', "train.csv"))
