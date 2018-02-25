@@ -20,6 +20,10 @@
 ++ Make sure you use Python 2.
 ++ You may want to use a virtual environment for this.
 
+## Workflow
++ Here is an outline of the workflow I used:
+![](C:\Users\shnoo\Desktop\Data Science\projects\‏20171105 Titanic\process.png?raw=true)
+
 ## Usage
 + Run pythn data_exploration.py to explore the data. This file will output information on the data.
 + Run python process.py to process the train and test data. 
