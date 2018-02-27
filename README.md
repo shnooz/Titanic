@@ -26,15 +26,21 @@
 ![](https://github.com/shnooz/Titanic/blob/master/process2.png)
 
 ## Usage
-+ Run pythn data_exploration.py to explore the data. This file will output information on the data. You don't have torun it if you don't want to...
++ Run pythn data_exploration.py to explore the data. This file will output information on the data. You don't have torun it if you don't want to... BUT it will show you the main data analysis which will help explain the rest...
 + Run python process.py to process the train and test data. 
-++ That will create two new files in the processed folder.
+++ That will create two new files in the processed folder (train.csv and test.csv).
 + Run python optimize.py.
 ++ This file does several things:
 +++ Random hyperparamater tuning for three different classifiers (DecisionTree, AdaBoost, RandomForests).
-+++ Outputs each classifier score
++++ Outputs each classifier score, and chosen hyperparameter values. The hyperparameters values would be saved in setting.py file.
 +++ stack the three classifiers results (VotingClassifier with 'hard' voting).
 +++ make predictions on the test.csv and saves the predictions in the predictions folder.
+
+## Things to do next...
+Here are some suggestions for further development:
++ Improve feature engineering in the process.py file (use information from the name, create one-hot-encoding...)
++ Save only hyperparmaters values that improve the score in the seeting.py file - That way you will be able to try and improve your classifier in each iteration (or perhaps only overfit the data :) ).
+
 
 Enjoy!
 Shnooz
