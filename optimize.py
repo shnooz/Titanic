@@ -13,16 +13,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import KFold
 
-
-
-
 train = pd.read_csv(os.path.join('processed', "train.csv"))
 
 X_train = train[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']]
 y_train = train['Survived']
 
-print(X_train.shape)
-print(y_train.shape)
+m = X_train.shape[0]
+n = X_train.shape[1]
+number_of_estimators = 4 #I'm using 4 different classifiers: logisticRegrassion, AdaBoost, DecisionTree, RandomForests
+
+#Create a numpy array to store the estimators best predictions
+predictions_np = np.zeros([m,number_of_estimators])
 
 # Optimizing hyperparameters for LogisticRegression
 LogisticRegression = LogisticRegression()
@@ -38,6 +39,8 @@ score = clf.best_score_
 print("____________________________________________")
 print("LogisticRegression best parameters:", params)
 print("LogisticRegression score:", score)
+
+predictions_np[:,0] = clf.predict(X_train)
 
 with open('settings.py', 'w') as f:
 	f.write('LogisticRegression:')
@@ -59,6 +62,8 @@ print("____________________________________________")
 print("DecisionTreeClassifier best parameters:", params)
 print("DecisionTreeClassifier score:", score)
 
+predictions_np[:,1] = clf.predict(X_train)
+
 with open('settings.py', 'a') as f:
 	f.write('\nDecisionTreeClassifier:')
 	f.write(' ' + str(params))
@@ -78,6 +83,8 @@ score = clf.best_score_
 print("____________________________________________")
 print("AdaBoostClassifier best parameters:", params)
 print("AdaBoostClassifier score:", score)
+
+predictions_np[:,2] = clf.predict(X_train)
 
 with open('settings.py', 'a') as f:
 	f.write('\nAdaBoostClassifier:')
@@ -99,6 +106,8 @@ print("____________________________________________")
 print("RandomForestClassifier best parameters:", params)
 print("RandomForestClassifier score:", score)
 
+predictions_np[:,3] = clf.predict(X_train)
+
 with open('settings.py', 'a') as f:
 	f.write('\nRandomForestClassifier:')
 	f.write(' ' + str(params))
@@ -107,3 +116,15 @@ with open('settings.py', 'a') as f:
 
 with open('settings.py', 'a') as f:
 	f.write('\nBye!!!!')
+
+print(predictions_np)
+
+cols = [ 'DecisionTreeClassifier', 'AdaBoostClassifier', 'RandomForestClassifier']
+predictions_DF = pd.DataFrame(predictions_np, columns = cols)
+print(predictions_DF.head())
+print(predictions_DF.corr())
+
+##Need to think of a way to combine the results
+
+predictions_DF['av_predict'] = predictions_DF.sum(axis=1)
+print(predictions_DF['av_predict'])
