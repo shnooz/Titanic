@@ -17,7 +17,7 @@ from sklearn.ensemble import VotingClassifier
 
 train = pd.read_csv(os.path.join('processed', "train.csv"))
 
-X_train = train[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']]
+X_train = train[['Pclass', 'Sex', 'Age','Fare', 'SibSp', 'Parch', 'Embarked', 'Title']]
 y_train = train['Survived']
 
 m = X_train.shape[0]
@@ -34,7 +34,7 @@ n_folds = 3
 
 tuned_parameters = {'max_depth':scipy.stats.randint(low=6,high=16),'min_samples_leaf':scipy.stats.randint(low=1,high=10) }
 # I use Random hyperparameter optimization:
-clf1 = RandomizedSearchCV(DecisionTreeClassifier, tuned_parameters, cv=n_folds, refit=True)
+clf1 = RandomizedSearchCV(DecisionTreeClassifier, tuned_parameters, cv=n_folds, refit=True, n_iter=10)
 clf1.fit(X_train, y_train)
 params_DTC = clf1.best_params_
 score = clf1.best_score_
@@ -56,7 +56,7 @@ n_folds = 3
 
 tuned_parameters = {'learning_rate':scipy.stats.expon(scale=0.1) }
 # I use Random hyperparameter optimization:
-clf2 = RandomizedSearchCV(AdaBoostClassifier, tuned_parameters, cv=n_folds, refit=True)
+clf2 = RandomizedSearchCV(AdaBoostClassifier, tuned_parameters, cv=n_folds, refit=True,  n_iter=10)
 clf2.fit(X_train, y_train)
 params_ABC = clf2.best_params_
 score = clf2.best_score_
@@ -78,7 +78,7 @@ n_folds = 3
 
 tuned_parameters = {'n_estimators': scipy.stats.randint(low=6,high=16), 'max_depth':scipy.stats.randint(low=6,high=16),'min_samples_leaf':scipy.stats.randint(low=1,high=10) }
 # I use Random hyperparameter optimization:
-clf3 = RandomizedSearchCV(RandomForestClassifier, tuned_parameters, cv=n_folds, refit=True)
+clf3 = RandomizedSearchCV(RandomForestClassifier, tuned_parameters, cv=n_folds, refit=True, n_iter=10)
 clf3.fit(X_train, y_train)
 params_RFC = clf3.best_params_
 score = clf3.best_score_
@@ -111,7 +111,7 @@ print("____________________________________________")
 
 #OK! and now - let's predict the train dataset survival:
 test = pd.read_csv(os.path.join('processed', 'test.csv'))
-X_test = test[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']]
+X_test = test[['Pclass', 'Sex', 'Age','Fare', 'SibSp', 'Parch', 'Embarked', 'Title']]
 test['predictions'] = eclf.predict(X_test)
 test_kaggle = pd.read_csv(os.path.join('data', 'test.csv'),  usecols = ['PassengerId'])
 test_kaggle['Survived'] = test['predictions']

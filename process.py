@@ -4,7 +4,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 def dummify(df, col_name):
-	df[col_name] = pd.get_dummies(df[col_name])
+	prefix = None
+	if col_name != 'Sex':
+		prefix = col_name
+	df[col_name] = pd.get_dummies(df[col_name], prefix =prefix )
 	return df
 
 #def normalize(df, col_name):
@@ -32,28 +35,66 @@ def hasNans (df):
 		hasNan = True
 	return(hasNan)
 
+def get_titles(df):
+    
+    # we extract the title from each name
+    df['Title'] = df['Name'].map(lambda name:name.split(',')[1].split('.')[0].strip())
+    
+    # a map of more aggregated titles
+    Title_Dictionary = {
+                        "Capt":       "Officer",
+                        "Col":        "Officer",
+                        "Major":      "Officer",
+                        "Jonkheer":   "Royalty",
+                        "Don":        "Royalty",
+                        "Sir" :       "Royalty",
+                        "Dr":         "Officer",
+                        "Rev":        "Officer",
+                        "the Countess":"Royalty",
+                        "Dona":       "Royalty",
+                        "Mme":        "Mrs",
+                        "Mlle":       "Miss",
+                        "Ms":         "Mrs",
+                        "Mr" :        "Mr",
+                        "Mrs" :       "Mrs",
+                        "Miss" :      "Miss",
+                        "Master" :    "Master",
+                        "Lady" :      "Royalty"
+
+                        }
+    
+    # we map each title
+    df['Title'] = df.Title.map(Title_Dictionary)
+    return(df)
+
 if __name__ == "__main__":
 	#Reading the files into a DataFrame:
     train_df = pd.read_csv(os.path.join('data', 'train.csv'))
     test_df = pd.read_csv(os.path.join('data', 'test.csv'))
 
-    # Changing to Categorical cols (dummy variables):
+    
+    #Using the titles from the names:
     for df in [train_df, test_df]:
-    	for col_name in ['Sex', 'Embarked']:
-    		df = dummify (df, col_name)
+    	df = get_titles(df)
 
+	
+	# Changing to Categorical cols (dummy variables):
+    for df in [train_df, test_df]:
+    	for col_name in ['Sex', 'Embarked', 'Title']:
+    		df = dummify (df, col_name)
+    
     # Normalizing parametes:
     #for df in [train_df, test_df]:
     #	for col_name in ['Age', 'SibSp', 'Parch', 'Fare']:
     #		df = normalize(df, col_name)
 
     #Choosing features to work with:
-    train_df = train_df[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked', 'Survived' ]]
-    test_df = test_df[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']]
+    train_df = train_df[['Pclass', 'Sex', 'Age','Fare', 'SibSp', 'Parch', 'Embarked', 'Title', 'Survived' ]]
+    test_df = test_df[['Pclass', 'Sex', 'Age', 'Fare', 'SibSp', 'Parch', 'Embarked', 'Title']]
 
     #Replacing Nans with mean (could improve that...):
     for df in [train_df, test_df]:
-    	for col_name in ['Age', 'Embarked']:
+    	for col_name in ['Age', 'Embarked','Fare']:
     		df = replace_nans(df, col_name)
 
     for df in [train_df, test_df]:
@@ -73,7 +114,7 @@ plt.title('Pearson Correlation of Features', y=1.05, size=15)
 sns.heatmap(train_df.astype(float).corr(), linewidths=0.1, vmax=1.0, square=True, cmap=colormap, linecolor='white', annot=True)
 plt.show()
 print('Producing a pairplot of the features....')
-g = sns.pairplot(train_df[['Survived', 'Pclass', 'Sex', 'Age', 'Parch', 'Embarked']], hue='Survived', palette='seismic', size=1.2, diag_kind='kde', diag_kws=dict(shade=True), plot_kws=dict(s=10))
+g = sns.pairplot(train_df[['Survived', 'Pclass', 'Sex', 'Age','Fare', 'Parch', 'Embarked', 'Title']], hue='Survived', palette='seismic', size=1.2, diag_kind='kde', diag_kws=dict(shade=True), plot_kws=dict(s=10))
 g.set(xticklabels=[])
 #plt.plot(train_df['Pclass'], train_df['Survived'])
 plt.show()
