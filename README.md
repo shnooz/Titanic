@@ -23,16 +23,18 @@
 ## Workflow
 + Here is an outline of the workflow I used:
 ![](https://github.com/shnooz/Titanic/blob/master/process.png)
+![](https://github.com/shnooz/Titanic/blob/master/process2.png)
 
 ## Usage
-+ Run pythn data_exploration.py to explore the data. This file will output information on the data.
++ Run pythn data_exploration.py to explore the data. This file will output information on the data. You don't have torun it if you don't want to...
 + Run python process.py to process the train and test data. 
 ++ That will create two new files in the processed folder.
-+ Run python learn.py.
-++ This file runs three different classifying algorithms and assesses them.
-+ Run python predict.py.
-++ This file uses logistic regression algorithm to predict the test dataset survival.
-++ It will creat a new file test_predict in the predictions folder
++ Run python optimize.py.
+++ This file does several things:
++++ Random hyperparamater tuning for three different classifiers (DecisionTree, AdaBoost, RandomForests).
++++ Outputs each classifier score
++++ stack the three classifiers results (VotingClassifier with 'hard' voting).
++++ make predictions on the test.csv and saves the predictions in the predictions folder.
 
 Enjoy!
 Shnooz

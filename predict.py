@@ -45,6 +45,11 @@ if __name__ == "__main__":
 	print('------------------------------------------------------------------------------')
 	print ('Computing predictions for the test dataset with LOGISTIC REGRESSION......')
 	print('------------------------------------------------------------------------------')
+	#add prediction_stacking from different models
 	test['predictions'] = make_predictions(test, model)
 	print (test.head())
+	test_kaggle = pd.read_csv(os.path.join('data', 'test.csv'),  usecols = ['PassengerId'])
+	test_kaggle['Survived'] = test['predictions']
+	test_kaggle = test_kaggle.set_index('PassengerId')
 	test.to_csv(os.path.join('predictions', "test_predict.csv"))
+	test_kaggle.to_csv(os.path.join('predictions', "test_predict_kaggle.csv"))

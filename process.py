@@ -23,6 +23,15 @@ def replace_nans(df, col_name):
 	df[col_name] = df[col_name].fillna(value = mean, axis = 0 )
 	return(df)
 
+def hasNans (df):
+	hasNan = False
+	if df.count().min() == df.shape[0]:
+		print ("Yay! There are no Nans in the dataset")
+	else:
+		print("oooops.. We have Nans...")
+		hasNan = True
+	return(hasNan)
+
 if __name__ == "__main__":
 	#Reading the files into a DataFrame:
     train_df = pd.read_csv(os.path.join('data', 'train.csv'))
@@ -46,6 +55,11 @@ if __name__ == "__main__":
     for df in [train_df, test_df]:
     	for col_name in ['Age', 'Embarked']:
     		df = replace_nans(df, col_name)
+
+    for df in [train_df, test_df]:
+    	print(df.head())
+    	print('_______')
+    	hasNans (df)
 
     #Saving the processed DataFrames to_csv in the processed folder
     train_df.to_csv(os.path.join('processed', "train.csv"))

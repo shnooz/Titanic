@@ -107,3 +107,15 @@ print("____________________________________________")
 print("VotingClassifier score:")
 print(eclf.score(X_train,y_train))
 print("____________________________________________")
+
+
+#OK! and now - let's predict the train dataset survival:
+test = pd.read_csv(os.path.join('processed', 'test.csv'))
+X_test = test[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']]
+test['predictions'] = eclf.predict(X_test)
+test_kaggle = pd.read_csv(os.path.join('data', 'test.csv'),  usecols = ['PassengerId'])
+test_kaggle['Survived'] = test['predictions']
+test_kaggle = test_kaggle.set_index('PassengerId')
+
+test_kaggle.to_csv(os.path.join('predictions', "test_predict_kaggle.csv"))
+
