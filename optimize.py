@@ -12,6 +12,8 @@ from sklearn.ensemble import RandomForestClassifier
 #Importing model_selection:
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import KFold
+#For stacking results from different classifiers:
+from sklearn.ensemble import VotingClassifier
 
 train = pd.read_csv(os.path.join('processed', "train.csv"))
 
@@ -20,32 +22,10 @@ y_train = train['Survived']
 
 m = X_train.shape[0]
 n = X_train.shape[1]
-number_of_estimators = 4 #I'm using 4 different classifiers: logisticRegrassion, AdaBoost, DecisionTree, RandomForests
+number_of_estimators = 3 #I'm using 3 different classifiers: logisticRegrassion, AdaBoost, DecisionTree, RandomForests
 
 #Create a numpy array to store the estimators best predictions
 predictions_np = np.zeros([m,number_of_estimators])
-
-# Optimizing hyperparameters for LogisticRegression
-LogisticRegression = LogisticRegression()
-
-n_folds = 3
-#The parameter I optimize is C:
-tuned_parameters = {'C':scipy.stats.expon(scale=1)}
-# I use Random hyperparameter optimization:
-clf = RandomizedSearchCV(LogisticRegression, tuned_parameters, cv=n_folds, refit=True)
-clf.fit(X_train, y_train)
-params = clf.best_params_
-score = clf.best_score_
-print("____________________________________________")
-print("LogisticRegression best parameters:", params)
-print("LogisticRegression score:", score)
-
-predictions_np[:,0] = clf.predict(X_train)
-
-with open('settings.py', 'w') as f:
-	f.write('LogisticRegression:')
-	f.write(' ' + str(params))
-	f.write(' ' + str(score))
 
 #Optimize hyperparameters for DecisionTreeClassifier:
 DecisionTreeClassifier = DecisionTreeClassifier()
@@ -54,19 +34,19 @@ n_folds = 3
 
 tuned_parameters = {'max_depth':scipy.stats.randint(low=6,high=16),'min_samples_leaf':scipy.stats.randint(low=1,high=10) }
 # I use Random hyperparameter optimization:
-clf = RandomizedSearchCV(DecisionTreeClassifier, tuned_parameters, cv=n_folds, refit=True)
-clf.fit(X_train, y_train)
-params = clf.best_params_
-score = clf.best_score_
+clf1 = RandomizedSearchCV(DecisionTreeClassifier, tuned_parameters, cv=n_folds, refit=True)
+clf1.fit(X_train, y_train)
+params_DTC = clf1.best_params_
+score = clf1.best_score_
 print("____________________________________________")
-print("DecisionTreeClassifier best parameters:", params)
+print("DecisionTreeClassifier best parameters:", params_DTC)
 print("DecisionTreeClassifier score:", score)
 
-predictions_np[:,1] = clf.predict(X_train)
+#predictions_np[:,0] = clf.predict(X_train)
 
-with open('settings.py', 'a') as f:
+with open('settings.py', 'w') as f:
 	f.write('\nDecisionTreeClassifier:')
-	f.write(' ' + str(params))
+	f.write(' ' + str(params_DTC))
 	f.write(' ' + str(score))
 
 #Optimize hyperparameters for AdaBoostClassifier:
@@ -76,19 +56,19 @@ n_folds = 3
 
 tuned_parameters = {'learning_rate':scipy.stats.expon(scale=0.1) }
 # I use Random hyperparameter optimization:
-clf = RandomizedSearchCV(AdaBoostClassifier, tuned_parameters, cv=n_folds, refit=True)
-clf.fit(X_train, y_train)
-params = clf.best_params_
-score = clf.best_score_
+clf2 = RandomizedSearchCV(AdaBoostClassifier, tuned_parameters, cv=n_folds, refit=True)
+clf2.fit(X_train, y_train)
+params_ABC = clf2.best_params_
+score = clf2.best_score_
 print("____________________________________________")
-print("AdaBoostClassifier best parameters:", params)
+print("AdaBoostClassifier best parameters:", params_ABC)
 print("AdaBoostClassifier score:", score)
 
-predictions_np[:,2] = clf.predict(X_train)
+#predictions_np[:,1] = clf.predict(X_train)
 
 with open('settings.py', 'a') as f:
 	f.write('\nAdaBoostClassifier:')
-	f.write(' ' + str(params))
+	f.write(' ' + str(params_ABC))
 	f.write(' ' + str(score))
 
 #Optimize hyperparameters for RandomForestClassifier:
@@ -98,33 +78,32 @@ n_folds = 3
 
 tuned_parameters = {'n_estimators': scipy.stats.randint(low=6,high=16), 'max_depth':scipy.stats.randint(low=6,high=16),'min_samples_leaf':scipy.stats.randint(low=1,high=10) }
 # I use Random hyperparameter optimization:
-clf = RandomizedSearchCV(RandomForestClassifier, tuned_parameters, cv=n_folds, refit=True)
-clf.fit(X_train, y_train)
-params = clf.best_params_
-score = clf.best_score_
+clf3 = RandomizedSearchCV(RandomForestClassifier, tuned_parameters, cv=n_folds, refit=True)
+clf3.fit(X_train, y_train)
+params_RFC = clf3.best_params_
+score = clf3.best_score_
 print("____________________________________________")
-print("RandomForestClassifier best parameters:", params)
+print("RandomForestClassifier best parameters:", params_RFC)
 print("RandomForestClassifier score:", score)
 
-predictions_np[:,3] = clf.predict(X_train)
+#predictions_np[:,2] = clf.predict(X_train)
 
 with open('settings.py', 'a') as f:
 	f.write('\nRandomForestClassifier:')
-	f.write(' ' + str(params))
+	f.write(' ' + str(params_RFC))
 	f.write(' ' + str(score))
 
 
 with open('settings.py', 'a') as f:
 	f.write('\nBye!!!!')
 
-print(predictions_np)
+#Now lets stack the results from the optimized classifiers:
 
-cols = [ 'DecisionTreeClassifier', 'AdaBoostClassifier', 'RandomForestClassifier']
-predictions_DF = pd.DataFrame(predictions_np, columns = cols)
-print(predictions_DF.head())
-print(predictions_DF.corr())
+eclf = VotingClassifier(estimators=[('dt', clf1), ('ab', clf2), ('rf', clf3)], voting='hard')
 
-##Need to think of a way to combine the results
 
-predictions_DF['av_predict'] = predictions_DF.sum(axis=1)
-print(predictions_DF['av_predict'])
+eclf = eclf.fit(X_train,y_train)
+print("____________________________________________")
+print("VotingClassifier score:")
+print(eclf.score(X_train,y_train))
+print("____________________________________________")
