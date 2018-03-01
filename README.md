@@ -38,8 +38,9 @@
 
 ## Things to do next...
 Here are some suggestions for further development:
-+ Improve feature engineering in the process.py file (use information from the name, create one-hot-encoding...)
++ Improve feature engineering in the process.py file (create one-hot-encoding to the age and fare...)
 + Save only hyperparmaters values that improve the score in the seeting.py file - That way you will be able to try and improve your classifier in each iteration (or perhaps only overfit the data :) ).
++ find the best combination and weights of algorithms to stack (currently I chose three out of fout I traied)
 
 
 Enjoy!
